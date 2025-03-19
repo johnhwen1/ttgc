@@ -1,5 +1,5 @@
 # Twisted Torus Model of Grid Cells
-This repo contains code to instantiate a twisted torus model of grid cell activity. This model is modified from work by Guanella et al. 2007 [[1]](#1).
+This repo contains code to instantiate a twisted torus model of grid cell activity. This model is based on work by Guanella et al. 2007 [[1]](#1) and incorporates two additions: sources of noise and landmark input. 
 
 ## References
 <a id="1">[1]</a>
