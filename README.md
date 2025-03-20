@@ -84,31 +84,23 @@ When the agent is moving, the weight between neurons $i$ and $j$ becomes modulat
 $w_{ij}(t) =  I \exp \bigg(- \frac{\|c_i - c_j+ \alpha R_{\beta}v(t-1)\|^2_{tri}} {\sigma^2}\bigg) - T$
 </p>
 
-The scale and orientation of the grid is dictated by the gain factor $\alpha \in \mathbb{R}^+$ and bias $\beta \in [0, π/3]$. The input of the network is thus modulated and biased by the gain and the bias parameters, with $v \longmapsto \alpha R_{\beta}v$ , where $R_{\beta}$ is the rotation matrix of angle $\beta$.
+The scale and orientation of the grid is dictated by the gain factor $\alpha \in \mathbb{R}^+$ and bias $\beta \in [0, \frac{\pi}{3}]$. The input of the network is thus modulated and biased by the gain and the bias parameters, with $v \longmapsto \alpha R_{\beta}v$ , where $R_{\beta}$ is the rotation matrix of angle $\beta$.
 
 ### Modifications
-This model is modified in two key ways from the model described in Guanella et al 2007. The first modification allows for added heading direction noise at each timestep, and the second introduces landmark inputs to the grid cell network. Heading direction noise is added as $\beta_{\text{noisy}}(t) = \beta + \sigma_{\beta} r(t)$, where $\beta$ is the unmodified bias, $\sigma_{\beta}$ regulates the extent of noise, and $r(t)$ is drawn from the standard normal distribution, and $\beta_{\text{noisy}}(t)$ is still constrained such that $\beta_{\text{noisy}}(t) \in [0, π/3]$ The rotation matrix is then calculated using $\beta_{\text{noisy}}(t)$.
+This model is modified in two key ways from the model described in Guanella et al 2007. The first modification allows for added heading direction noise at each timestep, and the second introduces landmark inputs to the grid cell network. Heading direction noise is added as $\beta_{\text{noisy}}(t) = \beta + \sigma_{\beta} r(t)$, where $\beta$ is the unmodified bias, $\sigma_{\beta}$ regulates the extent of noise, and $r(t)$ is drawn from the standard normal distribution, and $\beta_{\text{noisy}}(t)$ is still constrained such that $\beta_{\text{noisy}}(t) \in [0, \frac{\pi}{3}]$. The rotation matrix is then calculated using $\beta_{\text{noisy}}(t)$.
 
 Landmark inputs are added with the addition of landmark cells and their unidirectional excitatory synaptic connections to grid cells. When landmarks are present, each landmark $L_{i}$ is associated with its own dedicated landmark cell population. A given landmark cell's activity $A_{L_{i_j}}$ is dependent on the agent's proximity to the landmark's position, where $i \in \lbrace1, ..., N_L\rbrace$ and where $N_L$ is the number of landmarks present and $j \in \lbrace1, ..., N_{Ln}\rbrace$ where $N_{Ln}$ is a global parameter setting the number of landmark cells dedicated to any given landmark. The activity of landmark cell $A_{L_{i_j}}$ is defined as follows:
 <p align="center">
-$A_{L_{i_j}} = \alpha_{L_i} \exp \bigg(- \frac{\|p(t) - p_{L_i}\|^2} {\big(\frac{1}{2} q_{L_i}\big)^2} \bigg)$ if $\|p(t) - p_{L_i}\| \leq q_{L_i}$ and is otherwise set to $0$.
+$A_{L_{i_j}} = \alpha_{L_i} \exp \bigg(- \frac{\|p(t) - p_{L_i}\|^2} {\big(\frac{1}{2} q_{L_i}\big)^2} \bigg) \text{if} \|p(t) - p_{L_i}\| \leq q_{L_i} \text{, and otherwise set to } 0$.
 </p>
 
-where the strength of landmark $L_i$ is governed by $\alpha_{L_i} \in \mathbb{R}^+$, $p(t):= (p_x(t), p_y(t))$ is the position of the agent at time $t$, $p_{L_i} := (p_{L_{i_x}}, p_{L_{i_y}})$ is the position of $L_i$, and $q_{L_i} \in \mathbb{R}^+$ represents the lookahead distance at which landmark $L_i$ begins recruiting the activity of its landmark cells. In the most basic form of this model, each landmark cell sends an excitatory connection to only one grid cell and contributes to its activity through a modification to the linear transfer function:
+where the strength of landmark $L_i$ is governed by $\alpha_{L_i} \in \mathbb{R}^+$, $p(t):= (p_x(t), p_y(t))$ is the position of the agent at time $t$, $p_{L_i} := (p_{L_{i_x}}, p_{L_{i_y}})$ is the position of $L_i$, and $q_{L_i} \in \mathbb{R}^+$ represents the lookahead distance at which landmark $L_i$ begins recruiting the activity of its landmark cells. To incorporate input from landmark cells, the linear transfer function is modified as follows:
 
 <p align="center">
-$B_i(t) = A_i(t-1) + \sum_{j=1}^{N}A_j(t-1)w_{ji}(t-1) + \sum_{k=1}^{N_{L}} A_{L_k}(t-1) w_{ki}$
+$B_i(t) = A_i(t-1) + \sum_{j=1}^{N}A_j(t-1)w_{ji}(t-1) + \sum_{l=1}^{N_{L}} \sum_{m=1}^{N_{Ln}} A_{L_{l_m}}(t-1) w_{l_m i}(t-1)$
 </p>
 
-where $w_{ki} = 1$ and $\sum_{i=1}^{N} w_{ki} = 1$, allowing each landmark cell to be connected with only one grid cell. 
-
-A model containing a Hebbian plasticity term between landmark cells and grid cells makes the following modifications:
-1. The weight between each landmark cell and the $N$ grid cells is initialized randomly with values between $0$ and $1/\sqrt N$
-2. Hebbian plasticity allows changes in weights between landmark cells and grid cells as follows:
-
-$w_{ki}(t+1) = w_{ki}(t) + \alpha_{\text{hebb}} (A_i(t) A_{L_k}(t)) - \alpha_{\text{decay}}$
-
-where $\alpha_{\text{hebb}}$ regulates the extent of Hebbian potentiation and $\alpha_{\text{decay}}$ provides a constant decay factor. Weight values are constrained to be between some minimum $W_{L_{\text{min}}}$ and maximum $W_{L_{\text{max}}}$
+where $w_{l_mi}$ is the weight from landmark cell $m$, which responds to landmark $l$, to grid cell $i$.
 
 ## References
 <a id="1">[1]</a>
