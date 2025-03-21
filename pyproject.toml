@@ -22,3 +22,6 @@ dynamic = ["version"]
 
 [tool.setuptools.dynamic]
 version = {attr = "ttgc.__version__"}
+
+[project.urls]
+Repository = "https://github.com/johnhwen1/ttgc"
