@@ -76,7 +76,7 @@ def run_sim2d(init_state, cell_position_diffs,
 
     n_landmarks, _ = landmark.get_n_landmarks(l_pos)
     pos = np.cumsum(velocity, axis=0) + start_pos
-    A_l = landmark.calc_A_l(pos, l_pos, n_ln)
+    A_l = landmark.calc_A_l(pos, l_pos, n_ln, l_lookahead)
 
     if W_l_input is not None:
         W_l = W_l_input
