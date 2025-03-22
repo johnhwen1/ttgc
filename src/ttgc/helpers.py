@@ -44,11 +44,34 @@ def calc_rot_mat(beta):
 
 def nonnegative(x):
     """
-    Nonnegativity function    
+    Nonnegativity function 
+    
     Args:
-        x (np.ndarray or float): input
+        x (np.ndarray or float): input.
     Returns:
-        nonneg_x (np.ndarray or float): nonnegative version of x
+        nonneg_x (np.ndarray or float): nonnegative version of x.
     """
     nonneg_x = x.clip(min=0)
     return nonneg_x
+
+def str_to_float(arr):
+    """
+    Convert an array of string values to float values. np.nan values filled where errors occur.
+    
+    Args:
+        arr (np.ndarray): input array with string values. 
+    Returns:
+        np.ndarray: array with float values.
+    """
+    convert_arr = []
+    
+    for s in arr.ravel():    
+        try:
+            value = float(s)
+        except ValueError:
+            value = np.nan
+
+        convert_arr.append(value)
+
+    return np.array(convert_arr, dtype=object).reshape(arr.shape)
+
