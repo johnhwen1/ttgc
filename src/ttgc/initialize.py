@@ -30,7 +30,7 @@ def initialize_network(n_y, n_x, seed=0):
     N = n_y * n_x
 
     rng = np.random.default_rng(seed=seed)
-    init_state = rng.uniform(low=0, high=1/np.sqrt(N), size=(N,)
+    init_state = rng.uniform(low=0, high=1/np.sqrt(N), size=(N,))
     
     return init_state
 

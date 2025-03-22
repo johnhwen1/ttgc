@@ -1,6 +1,7 @@
 import numpy as np
 import torch
-from helpers import *
+import ttgc
+from ttgc import helpers
 
 if torch.cuda.is_available():
     device = torch.device('cuda')  # Use GPU
