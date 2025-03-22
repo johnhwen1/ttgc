@@ -1,9 +1,11 @@
 import numpy as np
 import torch
-from helpers import *
-from initialize import *
-from update import *
-from landmark import *
+import ttgc
+from ttgc import (
+    helpers,
+    initialize,
+    update,
+    landmark)
 
 def run_sim2d(init_state, cell_position_diffs, 
               n_y, n_x, alpha, beta, I, sigma, T, tau, velocity, start_pos,
