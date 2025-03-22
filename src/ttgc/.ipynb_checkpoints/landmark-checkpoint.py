@@ -18,7 +18,7 @@ def get_n_landmarks(l_pos):
         n_landmarks = 1
     return n_landmarks, l_pos
 
-def calc_A_l(pos, l_pos, n_ln, l_lookahead):
+def calc_A_l(pos, l_pos, n_ln, l_lookahead, l_str):
     """
     Calculates the activity of landmark cell(s) based on the agent's position over time and the landmark position(s).
     
