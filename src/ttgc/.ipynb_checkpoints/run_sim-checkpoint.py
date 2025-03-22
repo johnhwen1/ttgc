@@ -1,5 +1,6 @@
 import numpy as np
 import ttgc
+from matplotlib import pyplot as plt
 from ttgc import (
     helpers,
     initialize,
