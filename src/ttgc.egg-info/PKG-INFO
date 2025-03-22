@@ -1,15 +1,17 @@
 Metadata-Version: 2.4
 Name: ttgc
-Version: 0.1.1
+Version: 0.1.2
 Summary: A twisted torus model of grid cell activity.
 Author: John Wen
 License-Expression: GPL-3.0-or-later
+Project-URL: Repository, https://github.com/johnhwen1/ttgc
 Keywords: grid cell,twisted torus,topology
 Classifier: Programming Language :: Python :: 3
 Requires-Python: >=3.11
 Description-Content-Type: text/markdown
 License-File: LICENSE
 Requires-Dist: numpy
+Requires-Dist: torch
 Dynamic: license-file
 
 # Twisted Torus Model of Grid Cells
