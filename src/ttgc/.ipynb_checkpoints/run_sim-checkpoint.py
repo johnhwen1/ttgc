@@ -82,7 +82,7 @@ def run_sim2d(init_state, cell_position_diffs,
         W_l = W_l_input
     else:
         W_l = np.zeros((n_timebins, n_landmarks, n_ln, N))
-        W_l[0] = initialize.initialize_W_l(n_landmarks, n_ln, l_pinning_n, N, seed=seed)
+        W_l[0] = initialize.initialize_W_l(n_landmarks, n_ln, l_pinning_n, N, l_use_nearby, seed=seed)
         
         if alpha_hebb == 0:
             W_l[1:] = W_l[0]

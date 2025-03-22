@@ -34,7 +34,7 @@ def initialize_network(n_y, n_x, seed=0):
     
     return init_state
 
-def initialize_W_l(n_landmarks, n_ln, l_pinning_n, N, seed=1):
+def initialize_W_l(n_landmarks, n_ln, l_pinning_n, N, l_use_nearby, seed=1):
     """
     Generates the landmark cell to grid cell weight matrix. 
     
@@ -42,6 +42,7 @@ def initialize_W_l(n_landmarks, n_ln, l_pinning_n, N, seed=1):
         n_landmarks (int): number of landmarks.
         n_ln (int): number of landmark cells per landmark.
         l_pinning_n (int): number of grid cells each landmark cell projects to initially.
+        l_use_nearby (bool): whether to use nearby grid cells in setting initial pinning phases.
         seed (int, optional): for replication.
     Returns:
         W_l0 (np.ndarray): array of shape (n_landmarks, n_ln, N) containing the initial weight from each landmark cell from each landmark to each grid cell

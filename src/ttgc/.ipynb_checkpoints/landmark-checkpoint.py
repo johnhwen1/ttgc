@@ -26,7 +26,8 @@ def calc_A_l(pos, l_pos, n_ln, l_lookahead, l_str):
         pos (np.ndarray): array of shape (n_timebins, 2) representing the agent's 2D position over time.
         l_pos (np.ndarray): array of shape (n_landmarks, 2) representing the n_landmarks 2D position.
         n_ln (int): number of landmark cells per landmark.
-        l_lookahead(float): the lookahead distance at which landmarks start recruiting their landmark cell(s) activity.
+        l_lookahead (float): the lookahead distance at which landmarks start recruiting their landmark cell(s) activity.
+        l_str (float): strength of landmark pinning.
     Returns:
         A_l (np.ndarray): array of shape (n_timebins, n_landmarks, n_ln) containing the activity of each landmark cell's activity over time.
     """
