@@ -1,14 +1,18 @@
 import numpy as np
-import torch
+import GPUtil
 from ttgc import helpers
 
-if torch.cuda.is_available():
+if len(GPUtil.getAvailable())>0:
+    GPU_available = True
+    import torch
     device = torch.device('cuda')  # Use GPU
     dtype = torch.float32
 
     # Helper function to convert between numpy arrays and tensors
     to_t = lambda array: torch.tensor(array, device=device, dtype=dtype)
     from_t = lambda tensor: tensor.to("cpu").detach().numpy()
+else:
+    GPU_available = False
 
 def calc_cell_position_diffs(cell_positions):
     """
@@ -58,12 +62,12 @@ def calc_tri_dist_squared(mat):
     mat = np.tile(mat, (1, 1, 7))
     sum_mat = S + mat
 
-    if torch.cuda.is_available():
+    if GPU_available:
         t_sum_mat = to_t(sum_mat)
         t_tri_dist_squared = torch.min(torch.sum(torch.pow(t_sum_mat, 2), 0), 1)[0]
         tri_dist_squared = from_t(t_tri_dist_squared.cpu())
     else:
-        tri_dist_squared = np.min(np.sum(np.power(t_sum_mat, 2), axis=0), axis=1)
+        tri_dist_squared = np.min(np.sum(np.power(sum_mat, 2), axis=0), axis=1)
 
     return tri_dist_squared
 
@@ -119,8 +123,6 @@ def update_function(A_t, W_t, A_l_t, W_l_t, tau, mean_val):
     Returns:
         A_t1 (np.ndarray): array of shape (N,), where N = n_y * n_x, containing the activity of grid cells at the next timebin.
         B_t1 (np.ndarray): array of shape (N,), where N = n_y * n_x, containing the linear transfer function at the next timebin.
-    TODO:
-        expand A_l_t and W_l_t to allow for multiple landmark cells for each landmark.
     """
     B_t1 = A_t + W_t.T @ A_t + W_l_t.T @ A_l_t
     A_t1 = B_t1 + tau * B_t1 * (1 / mean_val - 1)

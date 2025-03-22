@@ -1,4 +1,5 @@
 import numpy as np
+from ttgc import update
 
 def calc_cell_positions(n_y, n_x):
     """
@@ -34,7 +35,7 @@ def initialize_network(n_y, n_x, seed=0):
     
     return init_state
 
-def initialize_W_l(n_landmarks, n_ln, l_pinning_n, N, l_use_nearby, seed=1):
+def initialize_W_l(n_landmarks, n_ln, l_pinning_n, N, l_use_nearby, cell_position_diffs, seed=1):
     """
     Generates the landmark cell to grid cell weight matrix. 
     
@@ -43,6 +44,7 @@ def initialize_W_l(n_landmarks, n_ln, l_pinning_n, N, l_use_nearby, seed=1):
         n_ln (int): number of landmark cells per landmark.
         l_pinning_n (int): number of grid cells each landmark cell projects to initially.
         l_use_nearby (bool): whether to use nearby grid cells in setting initial pinning phases.
+        cell_position_diffs (np.ndarray) array of shape (2, N, N), where N = n_y * n_x, containing the differences in positions between pairs of cells. 
         seed (int, optional): for replication.
     Returns:
         W_l0 (np.ndarray): array of shape (n_landmarks, n_ln, N) containing the initial weight from each landmark cell from each landmark to each grid cell
@@ -63,7 +65,7 @@ def initialize_W_l(n_landmarks, n_ln, l_pinning_n, N, l_use_nearby, seed=1):
                     if l_use_nearby:
                         cell0 = pinning_phases[l, lc, 0]
                         this_cell_dist_from_all = cell_position_diffs[:, cell0, :]
-                        this_cell_tri_dist = calc_tri_dist_squared(this_cell_dist_from_all)
+                        this_cell_tri_dist = update.calc_tri_dist_squared(this_cell_dist_from_all)
                         closest_cells = np.argsort(this_cell_tri_dist)
                         this_cell = closest_cells[li+1]
                     else:
