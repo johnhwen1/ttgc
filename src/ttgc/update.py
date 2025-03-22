@@ -119,8 +119,6 @@ def update_function(A_t, W_t, A_l_t, W_l_t, tau, mean_val):
     Returns:
         A_t1 (np.ndarray): array of shape (N,), where N = n_y * n_x, containing the activity of grid cells at the next timebin.
         B_t1 (np.ndarray): array of shape (N,), where N = n_y * n_x, containing the linear transfer function at the next timebin.
-    TODO:
-        expand A_l_t and W_l_t to allow for multiple landmark cells for each landmark.
     """
     B_t1 = A_t + W_t.T @ A_t + W_l_t.T @ A_l_t
     A_t1 = B_t1 + tau * B_t1 * (1 / mean_val - 1)

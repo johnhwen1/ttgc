@@ -71,4 +71,22 @@ def initialize_W_l(n_landmarks, n_ln, l_pinning_n, N, seed=1):
                 W_l0[l, lc, this_cell] = 1/(l_pinning_n*n_ln) # add input to specify landmark pinning weight
     return W_l0
 
-
+def preallocate_sim(n_timebins, N):
+    """
+    Preallocate arrays for simulation
+    
+    Args:
+        n_timebins (int): number of timebins.
+        N (int): number of grid cells.
+    Returns:
+        A (np.ndarray): array of shape (n_timebins, N) containing the activities of grid cells over time.
+        B (np.ndarray): array of shape (n_timebins, N) containing the linear transfer functions of grid cells over time.
+        mean_vals (np.ndarray): array of shape (n_timebins) containing the mean of the linear transfer function over time.
+        W (np.ndarray): array of shape (n_timebins, N, N) containing the grid-grid weights over time.
+    """
+    A = np.zeros((n_timebins, N))
+    B = np.zeros((n_timebins, N))
+    mean_vals = np.zeros((n_timebins,))
+    W = np.zeros((n_timebins, N, N))
+                 
+    return A, B, mean_vals, W
