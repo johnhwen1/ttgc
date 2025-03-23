@@ -1,1 +1,1 @@
-exclude src/ttgc/*.ipynb
+prune src/ttgc/testing
