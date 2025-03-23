@@ -75,3 +75,37 @@ def str_to_float(arr):
 
     return np.array(convert_arr, dtype=object).reshape(arr.shape)
 
+def calc_2d_maps(A, pos, n_bins):
+    """
+    Calculates an estimate of 2D rate maps
+    
+    Args:
+        A (np.ndarray): array of shape (n_timebins, N) containing the activities of N cells over time.
+        pos (np.ndarray): array of shape (n_timebins, 2) containing the position of the agent over time.
+        n_bins (int): number of spatial bins to discretize the environment.
+    Returns:
+        mean_maps (np.ndarray): array of shape (N, n_bins, n_bins) containing the mean firing activity of each cell.
+    """
+    n_timebins, N = np.shape(A)
+    H = np.digitize(pos, np.linspace(0, np.max(pos), n_bins+1), right=True)
+    
+    wherebins = []
+    for xi in range(n_bins):
+        tempx = np.where(H[:, 0] == xi+1)[0]
+        
+        for yi in range(n_bins):
+            tempy = np.where(H[:,1]==yi+1)[0]
+    
+            wherebins.append(np.intersect1d(tempx,tempy))
+    
+    mean_maps = np.zeros((N, n_bins, n_bins))
+    
+    for xi in range(n_bins):
+        
+        for yi in range(n_bins):
+            these_bins = wherebins[xi+yi*n_bins]
+            
+            if these_bins.size>0:
+                mean_maps[:, xi, yi] = np.mean(A[these_bins, :], axis=0)
+                
+    return mean_maps

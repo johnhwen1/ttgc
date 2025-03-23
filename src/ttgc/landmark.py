@@ -5,16 +5,16 @@ def get_n_landmarks(l_pos):
     Returns the number of landmarks based on l_pos and creates a pseudo-landmark if l_pos is empty.
     
     Args:
-        cell_positions (np.ndarray): array of shape (2, n_y, n_x) containing the y and x positions of each grid cell.
+        l_pos (np.ndarray): array of shape (n_landmarks, 2) containing the x and y positions of each landmark.
     Returns:
-        cell_position_diffs (np.ndarray): array of shape (2, N, N), where N = n_y * n_x, containing the differences in positions between pairs of cells. 
-                                          Element :,l,m represents the difference between the positions of cells c_l and c_m.
+        n_landmarks (int): number of landmarks present.
+        l_pos (np.ndarray): array of shape (n_landmarks, 2) containing the x and y positions of each landmark. If input is empty, will return an array of shape (1, 2).
     """
     if l_pos.size > 0:
         n_landmarks = l_pos.size // 2 # two dimensions in l_pos
     else:
         # create a pseudo-landmark that is never accessible
-        l_pos = np.array([-np.inf, -np.inf])
+        l_pos = np.expand_dims(np.array([-np.inf, -np.inf]), 0)
         n_landmarks = 1
     return n_landmarks, l_pos
 
@@ -42,8 +42,12 @@ def calc_A_l(pos, l_pos, n_ln, l_lookahead, l_str):
         l_pos_all = np.tile(np.expand_dims(l_pos, (0,2)), (n_timebins,1,n_ln,1))
         pos_from_l = pos_all - l_pos_all
         dist_from_l = np.linalg.norm(pos_from_l, axis=-1)
-    
-        exp_factor = 2 / l_lookahead
+
+        if l_lookahead == 0:
+            exp_factor = 0
+        else:
+            exp_factor = 2 / l_lookahead
+            
         far_idxs = np.abs(dist_from_l) >= l_lookahead # the smaller this becomes, the larger the factor x needs to be below (x * (true_pos_from_l))
         dist_from_l[far_idxs] = -np.inf
         A_l = l_str * np.exp(-np.power(exp_factor*(dist_from_l),2)) 

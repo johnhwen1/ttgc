@@ -116,8 +116,8 @@ def update_function(A_t, W_t, A_l_t, W_l_t, tau, mean_val):
     Args:
         A_t (np.ndarray): array of shape (N,), where N = n_y * n_x, containing the activity of grid cells at a given timebin.
         W_t (np.ndarray): array of shape (N, N) containing the calculated grid-grid weight matrix at the associated timebin.
-        A_l_t (np.ndarray): array of shape (n_landmarks) containing the activity of the landmark cells.
-        W_l_t (np.ndarray): array of shape (n_landmarks, N) containing the weights of each landmark to each grid cell.
+        A_l_t (np.ndarray): array of shape (n_landmarks, n_ln) containing the activity of the landmark cells.
+        W_l_t (np.ndarray): array of shape (n_landmarks, n_ln, N) containing the weights of each landmark to each grid cell.
         tau (float): stabilization strength.
         mean_val (float): the mean of the transfer function in the previous timebin.
     Returns:

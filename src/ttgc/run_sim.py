@@ -75,7 +75,7 @@ def run_sim2d(init_state, cell_position_diffs,
     B[0,:] = B0
     mean_vals[0] = np.mean(B0)
 
-    n_landmarks, _ = landmark.get_n_landmarks(l_pos)
+    n_landmarks, l_pos = landmark.get_n_landmarks(l_pos)
     pos = np.cumsum(velocity, axis=0) + start_pos
     A_l = landmark.calc_A_l(pos, l_pos, n_ln, l_lookahead, l_str)
 
