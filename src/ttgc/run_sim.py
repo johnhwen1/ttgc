@@ -32,9 +32,11 @@ def run_sim2d(init_state, cell_position_diffs,
         start_pos (np.ndarray): array of shape (2,) representing the starting position of the agent.
         l_pos (np.ndarray): array of shape (n_landmarks, 2) representing the locations of landmarks in the environment. Input np.empty(0) if no landmarks.
         l_str (float): strength of landmark pinning.
+        n_ln (int): number of landmark cells per landmark.
         l_pinning_n (int): number of grid cells each landmark cell projects to initially.
         l_use_nearby (bool): whether to use nearby grid cells in setting initial pinning phases.
         l_lookahead (float): the lookahead distance at which landmarks start recruiting their landmark cell(s) activity.
+        alpha_hebb (float): Hebbian plasticity gain term.
         n_warmup_bins (int): number of timebins to use with 0 velocity to stabilize a bump of activity through attractor dynamics.
         B0 (np.ndarray): the linear transfer function at the 0th timebin. Input np.zeros(N) if no specific array to be used.
         beta_noise (float, optional): Gaussian sigma for the amount of noise to be added to the rotation matrix per timebin. 
@@ -42,7 +44,7 @@ def run_sim2d(init_state, cell_position_diffs,
         W_input (np.ndarray, optional): array of shape (n_timebins, N, N) representing the grid-grid weight matrix over time to be used. Useful for replicating simulations with equivalent velocity inputs.
         W_l_input (np.ndarray, optional): array of shape (n_timebins, n_landmarks, n_ln, N) representing the landmark cell to grid weight matrix over time to be used.
         seed (int, optional): for replication.
-        output_bins (int, optional): number of timebins before next plot of population activity is rendered during simulation.
+        output_bins (int, optional): number of timebins before next plot of population activity is rendered during simulation. Set to np.inf to suppress all plots.
     Returns:
         A (np.ndarray): array of shape (n_timebins, N) containing the activities of grid cells over time.
         B (np.ndarray): array of shape (n_timebins, N) containing the linear transfer functions of grid cells over time.
@@ -53,7 +55,7 @@ def run_sim2d(init_state, cell_position_diffs,
         betas_with_noise (np.ndarray): array of shape (n_timebins,) containing noisy beta values over time.
         weight_noise_vals (np.ndarray): array of shape (n_timebins, N, N) containing the grid-grid noise values added to weights over time.
     TODO:
-        Incorporate hebbian plasticity mechanism
+        Incorporate hebbian plasticity mechanism; make sure to include alpha_decay term.
     """
     alpha_hebb = 0
     n_timebins = velocity.shape[0]
@@ -128,7 +130,7 @@ def run_sim2d(init_state, cell_position_diffs,
         # update next timestep
         A[t+1, :], B[t+1, :] = update.update_function(A[t, :], W[t, :, :], A_l[t, :, :].reshape(-1), W_l[t, :, :, :].reshape(-1, N), tau, mean_vals[t])
         
-        if (np.mod(t, output_bins)==0):
+        if (np.mod(t, output_bins)==0 and not output_bins==np.inf):
             if output_bins > 0:
                 print(t)
                 fig = plt.figure(figsize=(3,3))
