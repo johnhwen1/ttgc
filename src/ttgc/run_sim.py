@@ -108,7 +108,7 @@ def run_sim2d(init_state, cell_position_diffs,
                                                                         tau, mean_vals_warmup[t])
 
         init_state = A_warmup[-1, :]
-        if output_bins>0:
+        if not output_bins == np.inf:
             print('Warmup Complete')
 
     A[0, :] = init_state
