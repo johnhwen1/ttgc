@@ -1,5 +1,6 @@
 import numpy as np
 import update
+import helpers
 
 def calc_cell_positions(n_y, n_x):
     """
@@ -16,6 +17,33 @@ def calc_cell_positions(n_y, n_x):
     cell_positions[1, :, :] = np.tile((np.arange(1,n_x+1) - 0.5)/n_x, (n_y, 1))
   
     return cell_positions
+
+def calc_cell_position_diffs(cell_positions):
+    """
+    Calculates the position differences between each pair of grid cells.
+    
+    Args:
+        cell_positions (np.ndarray): array of shape (2, n_y, n_x) containing the y and x positions of each grid cell.
+    Returns:
+        cell_position_diffs (np.ndarray): array of shape (2, N, N), where N = n_y * n_x, containing the differences in positions between pairs of cells. 
+                                          Element :,l,m represents the difference between the positions of cells c_l and c_m.
+    """
+    # if you want the compare cell c_l (at position i1j1) to cell c_m (at position i2j2), you get their 1d indices.
+    _, n_y, n_x = cell_positions.shape
+    N = n_y * n_x
+    cell_position_diffs = np.zeros((2, N, N))
+
+    for i in range(N):
+        cell1_idx = helpers.one_to_two_index(i, n_y) # sequentially down the rows then left to right across columns
+        cell1_pos = cell_positions[:, cell1_idx[0], cell1_idx[1]]
+        
+        for j in range(N):
+            cell2_idx = helpers.one_to_two_index(j, n_y)
+            cell2_pos = cell_positions[:, cell2_idx[0], cell2_idx[1]]
+            cell_position_diffs[:, i, j] = cell1_pos - cell2_pos
+            
+    return cell_position_diffs
+
 
 def initialize_network(n_y, n_x, seed=1):
     """
