@@ -53,8 +53,7 @@ def run_sim2d(init_state, cell_position_diffs,
         betas_with_noise (np.ndarray): array of shape (n_timebins,) containing noisy beta values over time.
         weight_noise_vals (np.ndarray): array of shape (n_timebins, N, N) containing the grid-grid noise values added to weights over time.
     TODO:
-        Clean up the code below
-        incorporate hebbian plasticity mechanism
+        Incorporate hebbian plasticity mechanism
     """
     alpha_hebb = 0
     n_timebins = velocity.shape[0]
