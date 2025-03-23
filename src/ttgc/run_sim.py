@@ -1,11 +1,9 @@
 import numpy as np
-import ttgc
 from matplotlib import pyplot as plt
-from ttgc import (
-    helpers,
-    initialize,
-    update,
-    landmark)
+import helpers
+import initialize
+import update
+import landmark
 
 def run_sim2d(init_state, cell_position_diffs, 
               n_y, n_x, alpha, beta, I, sigma, T, tau, velocity, start_pos,

@@ -1,6 +1,6 @@
 import numpy as np
 import GPUtil
-from ttgc import helpers
+import helpers
 
 if len(GPUtil.getAvailable())>0:
     GPU_available = True

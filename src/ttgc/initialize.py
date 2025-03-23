@@ -1,5 +1,5 @@
 import numpy as np
-from ttgc import update
+import update
 
 def calc_cell_positions(n_y, n_x):
     """
