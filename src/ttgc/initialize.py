@@ -17,7 +17,7 @@ def calc_cell_positions(n_y, n_x):
   
     return cell_positions
 
-def initialize_network(n_y, n_x, seed=0):
+def initialize_network(n_y, n_x, seed=1):
     """
     Initializes the network of n_y * n_x grid cells 
     
