@@ -1,4 +1,7 @@
 import numpy as np
+from scipy.signal import correlate2d
+import numpy.ma as ma
+from scipy.ndimage import rotate
 
 def one_to_two_index(idx, n_y):
     """
@@ -109,3 +112,107 @@ def calc_2d_maps(A, pos, n_bins):
                 mean_maps[:, xi, yi] = np.mean(A[these_bins, :], axis=0)
                 
     return mean_maps
+
+def calc_masked_sac(mean_maps, inner_rad, outer_rad):
+    """
+    Calculates a masked spatial autocorrelogram estimate from 2D rate maps
+    
+    Args:
+        mean_maps (np.ndarray): array of shape (N, n_bins, n_bins) containing the mean firing activity of each cell.
+        inner_rad (int): exclusion inner radius.
+        outer_rad (int): exclusion outer radius.
+    Returns:
+        masked_sacs (np.ndarray): array of shape (N, n_spatial_bins*2-1, n_spatial_bins*2-1) containing the masked spatial autocorrelograms of each cell.
+        idxs_out_inner0 (np.ndarray): array of variable shape containing indices less than inner radius for axis 0.
+        idxs_out_inner1 (np.ndarray): array of variable shape containing indices less than inner radius for axis 1.
+        idxs_out_outer0 (np.ndarray): array of variable shape containing indices greater than outer radius for axis 0.
+        idxs_out_outer1 (np.ndarray): array of variable shape containing indices greater than outer radius for axis 1.
+
+    """
+    N = mean_maps.shape[0]
+    n_spatial_bins = mean_maps.shape[-1]
+
+    sacs = np.zeros((N, n_spatial_bins*2-1, n_spatial_bins*2-1))
+
+    for c in range(N):
+        sacs[c] = correlate2d(mean_maps[c], mean_maps[c])
+    
+    mask = np.ones(sacs.shape)
+
+    dist_from_center = np.zeros((2, mask.shape[-1], mask.shape[-1]))
+    dist_from_center[0] = np.arange(-mask.shape[-1]//2+1, mask.shape[-1]//2+1)
+    dist_from_center[1] = np.arange(-mask.shape[-1]//2+1, mask.shape[-1]//2+1)
+    dist_from_center[1] = dist_from_center[1].T
+    
+    dist_from_center = np.linalg.norm(dist_from_center, axis=0)
+    
+    idxs_out_inner0 = np.where(dist_from_center<inner_rad)[0]
+    idxs_out_inner1 = np.where(dist_from_center<inner_rad)[1]
+    idxs_out_outer0 = np.where(dist_from_center>outer_rad)[0]
+    idxs_out_outer1 = np.where(dist_from_center>outer_rad)[1]
+    
+    mask[:, idxs_out_inner0, idxs_out_inner1] = 0
+    mask[:, idxs_out_outer0, idxs_out_outer1] = 0
+    
+    masked_sacs = sacs * mask
+    return masked_sacs, idxs_out_inner0, idxs_out_inner1, idxs_out_outer0, idxs_out_outer1
+
+def calc_sxcs(masked_sacs, idxs_out_inner0, idxs_out_inner1, idxs_out_outer0, idxs_out_outer1):
+    """
+    Calculates a spatial crosscorrelation from the masked autocorrelgrams and rotations of them.
+    
+    Args:
+        masked_sacs (np.ndarray): array of shape (N, n_spatial_bins*2-1, n_spatial_bins*2-1) containing the masked spatial autocorrelograms of each cell.
+        idxs_out_inner0 (np.ndarray): array of variable shape containing indices less than inner radius for axis 0.
+        idxs_out_inner1 (np.ndarray): array of variable shape containing indices less than inner radius for axis 1.
+        idxs_out_outer0 (np.ndarray): array of variable shape containing indices greater than outer radius for axis 0.
+        idxs_out_outer1 (np.ndarray): array of variable shape containing indices greater than outer radius for axis 1.
+    Returns:
+        sxcs (np.ndarray): array of shape (5, N) containing the spatial cross-correlations on rotations of masked sacs and the original one.
+    """
+    rotations = np.array([60, 120, 30, 90, 150]) # first two are grid angles, the last three are anti-grid
+    n_rotations = rotations.size
+    N, n_corr_bins, _ = masked_sacs.shape
+    
+    rotated_masked_sacs = np.zeros((n_rotations, N, n_corr_bins, n_corr_bins))
+    sxcs = np.zeros((n_rotations, N))
+    
+    for r in range(n_rotations):
+        this_rotation = rotations[r]
+
+        for c in range(N):
+            # first rotate, and then set nans. 
+            this_masked_sac = np.copy(masked_sacs[c])
+            rotated_masked_sacs[r,c,:,:] = rotate(this_masked_sac, this_rotation, reshape=False)
+            this_rotated_masked_sac = np.copy(rotated_masked_sacs[r,c,:,:])
+
+            this_masked_sac[idxs_out_inner0, idxs_out_inner1] = np.nan
+            this_masked_sac[idxs_out_outer0, idxs_out_outer1] = np.nan
+            this_rotated_masked_sac[idxs_out_inner0, idxs_out_inner1] = np.nan
+            this_rotated_masked_sac[idxs_out_outer0, idxs_out_outer1] = np.nan
+
+            sxcs[r,c] = ma.corrcoef(ma.masked_invalid(this_masked_sac.reshape(-1)), 
+                                    ma.masked_invalid(this_rotated_masked_sac.reshape(-1)))[0,1]
+    return sxcs
+
+def calc_grid_scores(mean_maps, inner_rad, outer_rad):
+    """
+    Calculates grid scores from mean maps.
+    
+    Args:
+        mean_maps (np.ndarray): array of shape (N, n_bins, n_bins) containing the mean firing activity of each cell.
+        inner_rad (int): exclusion inner radius.
+        outer_rad (int): exclusion outer radius.
+    Returns:
+        grid_scores (np.ndarray): array of shape (N,) containing the grid scores of each cell.
+    """
+    masked_sacs, idxs_out_inner0, idxs_out_inner1, idxs_out_outer0, idxs_out_outer1 = calc_masked_sac(mean_maps, inner_rad, outer_rad)
+    sxcs = calc_sxcs(masked_sacs, idxs_out_inner0, idxs_out_inner1, idxs_out_outer0, idxs_out_outer1)
+    
+    min_vals = np.min(sxcs[0:2], axis=0)
+    max_vals = np.max(sxcs[2:], axis=0)
+    grid_scores = min_vals - max_vals
+    return grid_scores
+
+
+    
