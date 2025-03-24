@@ -2,7 +2,7 @@
 This repo contains code to instantiate a twisted torus model of grid cell activity. This model is based on work by Guanella et al. 2007 [[1]](#1) but includes two additions: sources of noise and landmark input. Model details are included below.
 
 ## Getting started
-You can try out the model without having to install anything by running this Google Colab <a target="_blank" href="https://colab.research.google.com/github/https://colab.research.google.com/github/johnhwen1/ttgc/blob/main/examples/ttgc.ipynb">
+You can try out the model without having to install anything by running this Google Colab <a target="_blank" href="https://colab.research.google.com/github/johnhwen1/ttgc/blob/main/examples/ttgc.ipynb">
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>. Alternatively, you can install the model locally and run the same example notebook (see below for instructions).
 
 ### Installing and running locally
