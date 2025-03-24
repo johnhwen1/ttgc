@@ -11,6 +11,7 @@ def calc_tri_dist_squared(mat, use_GPU):
     
     Args:
         mat (np.ndarray): array of shape (2, N, N) containing the differences in positions between pairs of cells, either with or without velocity modulation.
+        use_GPU (bool): whether to use GPU.
     Returns:
         tri_dist_squared (np.ndarray): array of shape (2, N, N) containing the tri-norms on the modulated position differences array.
     """
@@ -36,7 +37,7 @@ def calc_tri_dist_squared(mat, use_GPU):
 
     return tri_dist_squared
 
-def calc_weight_mat(cell_position_diffs, n_y, n_x, alpha, beta, velocity, I, sigma, T):
+def calc_weight_mat(cell_position_diffs, n_y, n_x, alpha, beta, velocity, I, sigma, T, use_GPU):
     """
     Calculates the weight matrix used to calculate the contributions of each grid cell to the linear transfer function.
     
@@ -50,6 +51,7 @@ def calc_weight_mat(cell_position_diffs, n_y, n_x, alpha, beta, velocity, I, sig
         I (float): intensity parameter.
         sigma (float): Gaussian size.
         T (float): shift parameter.
+        use_GPU (bool): whether to use GPU.
     Returns:
         W (np.ndarray): array of shape (N, N) containing grid-cell to grid-cell weights.
         exp_arg (np.ndarray): array of shape (N, N) representing the matrix being exponentiated.  
@@ -67,7 +69,7 @@ def calc_weight_mat(cell_position_diffs, n_y, n_x, alpha, beta, velocity, I, sig
     cell_position_diffs_with_mod = cell_position_diffs + modulation_mat
 
     modded_mat = cell_position_diffs_with_mod.reshape(2, -1)
-    exp_arg = calc_tri_dist_squared(modded_mat).reshape(N, N)
+    exp_arg = calc_tri_dist_squared(modded_mat, use_GPU).reshape(N, N)
     
     exp_arg = -1*(exp_arg / np.power(sigma, 2))
     

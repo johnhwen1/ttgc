@@ -10,7 +10,7 @@ def run_sim2d(init_state, cell_position_diffs,
               l_pos, l_str, n_ln, l_pinning_n, l_use_nearby, l_lookahead,
               alpha_hebb,
               n_warmup_bins,
-              B0, beta_noise=0, weight_noise=0, 
+              B0, use_GPU, beta_noise=0, weight_noise=0, 
               W_input=None, W_l_input=None, seed=1, output_bins=10000):
     """
     Runs the full simulation given velocity inputs over time.
@@ -37,6 +37,7 @@ def run_sim2d(init_state, cell_position_diffs,
         alpha_hebb (float): Hebbian plasticity gain term.
         n_warmup_bins (int): number of timebins to use with 0 velocity to stabilize a bump of activity through attractor dynamics.
         B0 (np.ndarray): the linear transfer function at the 0th timebin. Input np.zeros(N) if no specific array to be used.
+        use_GPU (bool): whether to use GPU.
         beta_noise (float, optional): Gaussian sigma for the amount of noise to be added to the rotation matrix per timebin. 
         weight_noise (float, optional): Gaussian sigma for the amount of noise to be added to grid-grid weight matrix per timebin.
         W_input (np.ndarray, optional): array of shape (n_timebins, N, N) representing the grid-grid weight matrix over time to be used. Useful for replicating simulations with equivalent velocity inputs.
@@ -101,7 +102,7 @@ def run_sim2d(init_state, cell_position_diffs,
             else:
                 mean_vals_warmup[t] = np.mean(B_warmup[t, :])
                             
-            W_warmup[t, :, :], _, = update.calc_weight_mat(cell_position_diffs, n_y, n_x, alpha, warmup_beta[t], warmup_velocity[t], I, sigma, T)
+            W_warmup[t, :, :], _, = update.calc_weight_mat(cell_position_diffs, n_y, n_x, alpha, warmup_beta[t], warmup_velocity[t], I, sigma, T, use_GPU)
             A_warmup[t+1, :], B_warmup[t+1, :] = update.update_function(A_warmup[t, :], W_warmup[t, :, :], A_l_warmup[t, :, :].reshape(-1), W_l_warmup[t, :, :, :].reshape(-1, N), 
                                                                         tau, mean_vals_warmup[t])
 
@@ -122,11 +123,11 @@ def run_sim2d(init_state, cell_position_diffs,
                 beta_t = beta
             else:
                 beta_t = betas_with_noise[t-1]
-            W[t, :, :], _ = update.calc_weight_mat(cell_position_diffs, n_y, n_x, alpha, beta_t, velocity[t], I, sigma, T)
+            W[t, :, :], _ = update.calc_weight_mat(cell_position_diffs, n_y, n_x, alpha, beta_t, velocity[t], I, sigma, T, use_GPU)
             W[t, :, :] += weight_noise_vals[t, :, :] # add noise
 
         # update next timestep
-        A[t+1, :], B[t+1, :] = update.update_function(A[t, :], W[t, :, :], A_l[t, :, :].reshape(-1), W_l[t, :, :, :].reshape(-1, N), tau, mean_vals[t])
+        A[t+1, :], B[t+1, :] = update.update_function(A[t, :], W[t, :, :], A_l[t, :, :].reshape(-1), W_l[t, :, :, :].reshape(-1, N), tau, mean_vals[t], use_GPU)
         
         if (np.mod(t, output_bins)==0 and not output_bins==np.inf):
             if output_bins > 0:

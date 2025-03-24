@@ -3,6 +3,7 @@ MANIFEST.in
 README.md
 pyproject.toml
 src/ttgc/__init__.py
+src/ttgc/globals.py
 src/ttgc/helpers.py
 src/ttgc/initialize.py
 src/ttgc/landmark.py
