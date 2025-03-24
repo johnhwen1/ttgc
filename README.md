@@ -14,7 +14,7 @@ You can try out the model without having to install anything by running this Goo
 
 3. Install TTGC by pip installing or git clone / download.
    1. Method 1: Pip install directly from PyPI. Pip install by running ```pip install ttgc```. Then, you can download and run ttgc.ipynb in the [examples](https://github.com/johnhwen1/ttgc/examples) folder.
-   2. Method 2: Git clone (or download). Git clone or download this repo, cd into the downloaded repo, and then run ```pip install .``` and ```pip install -r requirements.txt```
+   2. Method 2: Git clone (or download). Git clone or download this repo, cd into the downloaded repo, and then run ```pip install .``` and ```pip install -r requirements.txt```.
 Then, navigate to the examples folder and run the ttgc.ipynb 
 
 ## Model details
