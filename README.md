@@ -6,8 +6,8 @@ You can try out the model without having to install anything by running this Goo
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>. Alternatively, you can install the model locally and run the same example notebook (see below for instructions).
 
 ### Installing and running locally
-(Optional)
-Create a virtual environment. If you have an Anaconda distribution of Python, create an environment with 
+#### Create a virtual environment (Optional)
+If you have an Anaconda distribution of Python, create an environment with 
 ```
 conda create --name ttgc python=3.11. 
 ```
