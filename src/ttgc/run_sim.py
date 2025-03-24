@@ -127,7 +127,7 @@ def run_sim2d(init_state, cell_position_diffs,
             W[t, :, :] += weight_noise_vals[t, :, :] # add noise
 
         # update next timestep
-        A[t+1, :], B[t+1, :] = update.update_function(A[t, :], W[t, :, :], A_l[t, :, :].reshape(-1), W_l[t, :, :, :].reshape(-1, N), tau, mean_vals[t], use_GPU)
+        A[t+1, :], B[t+1, :] = update.update_function(A[t, :], W[t, :, :], A_l[t, :, :].reshape(-1), W_l[t, :, :, :].reshape(-1, N), tau, mean_vals[t])
         
         if (np.mod(t, output_bins)==0 and not output_bins==np.inf):
             if output_bins > 0:
