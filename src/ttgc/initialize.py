@@ -2,7 +2,8 @@ import numpy as np
 import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from ttgc import (update, helpers)
+from ttgc import update.calc_tri_dist_squared
+from ttgc import helpers
 
 def calc_cell_positions(n_y, n_x):
     """

@@ -3,8 +3,16 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from ttgc import helpers
-from ttgc.globals import can_use_GPU
+from ttgc import globals.use_GPU
+from ttgc import globals
 
+if can_use_GPU:    
+    # Helper function to convert between numpy arrays and tensors
+    to_t = lambda array: torch.tensor(array, device=device, dtype=dtype)
+    from_t = lambda tensor: tensor.to("cpu").detach().numpy()
+    device = torch.device('cuda')  # Use GPU
+    dtype = torch.float32
+    
 def calc_tri_dist_squared(mat, use_GPU):
     """
     Calculates the square of the tri-norm as defined in Guanella et al. 2007 (see equations 4-13, and the numerator of equation 14).
