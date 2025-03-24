@@ -7,7 +7,16 @@ You can try out the model without having to install anything by running this Goo
 
 ### Installing and running locally
 (Optional)
-Create a virtual environment first. If you have an Anaconda distribution of Python, double check your python version is greater than 3.9.
+Create a virtual environment. If you have an Anaconda distribution of Python, create an environment with 
+```
+conda create --name ttgc python=3.11. 
+```
+However, Python 3.9 or greater should work.
+
+If you use venv, create an environment by first ensuring you have Python 3.9 or greater installed. For instance, if you have Python 3.11, you can run
+```
+python3.11 -m venv "ttgc"
+```
 
 Use either of two methods below to save and run the code locally. 
 #### Method 1: Pip install
