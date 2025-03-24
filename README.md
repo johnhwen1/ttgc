@@ -11,12 +11,19 @@ If you have an Anaconda distribution of Python, create an environment with
 ```
 conda create --name ttgc python=3.11. 
 ```
-However, Python 3.9 or greater should work.
+However, Python 3.9 or greater should work. Then, activate the environment with 
+```
+conda activate ttgc
+```
 
-If you use venv, create an environment by first ensuring you have Python 3.9 or greater installed. For instance, if you have Python 3.11, you can run
+If you use venv, first ensure you have Python 3.9 or greater installed. Then, navigate to a directory where you want to create the environment. If you have Python 3.11, you can run
 ```
-python3.11 -m venv "ttgc"
+python3.11 -m venv ttgc
 ```
+Replace the version with the one you have. Then, activate your environment with either ```ttgc\Scripts\activate.bat``` if you're using Command Prompt on Windows or ```source ttgc/bin/activate``` if you're on macOS/Linux. 
+
+
+
 
 Use either of two methods below to save and run the code locally. 
 #### Method 1: Pip install
