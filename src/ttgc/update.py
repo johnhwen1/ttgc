@@ -24,7 +24,8 @@ def calc_square_dist_squared(mat, use_GPU):
         square_dist_squared (np.ndarray): array of shape (2, N, N) containing the square_norms on the modulated position differences array.
     """
     n_comps = mat.shape[1]
-    S = np.array([[0, 0], [1, 1], [0, 1], [1, 0]])
+    S = np.array([[0, 0], [1, 1], [0, 1], [1, 0],
+                  [1, -1], [-1, 1], [-1, -1], [0, -1], [-1, 0]])
     S = np.fliplr(S)
     
     # make copies to do vector subtractions
@@ -32,13 +33,13 @@ def calc_square_dist_squared(mat, use_GPU):
     S = np.tile(S, (1, n_comps, 1))
 
     mat = np.expand_dims(mat, 2)
-    mat = np.tile(mat, (1, 1, 4))
+    mat = np.tile(mat, (1, 1, 9))
     sum_mat = S + mat
     
     if (use_GPU):
         t_sum_mat = to_t(sum_mat)
         t_square_dist_squared = torch.min(torch.sum(torch.pow(t_sum_mat, 2), 0), 1)[0]
-        square_dist_squared = from_t(t_tri_dist_squared.cpu())
+        square_dist_squared = from_t(t_square_dist_squared.cpu())
     else:
         square_dist_squared = np.min(np.sum(np.power(sum_mat, 2), axis=0), axis=1)
 
@@ -49,7 +50,7 @@ def calc_tri_dist_squared(mat, use_GPU):
     Calculates the square of the tri-norm as defined in Guanella et al. 2007 (see equations 4-13, and the numerator of equation 14).
     
     Args:
-        mat (np.ndarray): array of shape (2, N, N) containing the differences in positions between pairs of cells, either with or without velocity modulation.
+        mat (np.ndarray): array of shape (2, N^2) containing the differences in positions between pairs of cells, either with or without velocity modulation.
         use_GPU (bool): whether to use GPU.
     Returns:
         tri_dist_squared (np.ndarray): array of shape (2, N, N) containing the tri-norms on the modulated position differences array.
