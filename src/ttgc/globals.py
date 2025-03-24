@@ -8,7 +8,7 @@ if len(GPUtil.getAvailable())>0:
 
         # Check if GPU version of pytorch installed
         if torch.cuda.is_available():
-            cau_use_GPU = True
+            can_use_GPU = True
     except:
         can_use_GPU = False
 else:

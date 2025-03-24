@@ -3,10 +3,10 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from ttgc import helpers
-from ttgc import globals.use_GPU
-from ttgc import globals
+from ttgc.globals import can_use_GPU
 
 if can_use_GPU:    
+    import torch
     # Helper function to convert between numpy arrays and tensors
     to_t = lambda array: torch.tensor(array, device=device, dtype=dtype)
     from_t = lambda tensor: tensor.to("cpu").detach().numpy()

@@ -2,7 +2,7 @@ import numpy as np
 import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from ttgc import update.calc_tri_dist_squared
+from ttgc.update import calc_tri_dist_squared
 from ttgc import helpers
 
 def calc_cell_positions(n_y, n_x):
@@ -95,7 +95,7 @@ def initialize_W_l(n_landmarks, n_ln, l_pinning_n, N, l_use_nearby, cell_positio
                     if l_use_nearby:
                         cell0 = pinning_phases[l, lc, 0]
                         this_cell_dist_from_all = cell_position_diffs[:, cell0, :]
-                        this_cell_tri_dist = update.calc_tri_dist_squared(this_cell_dist_from_all)
+                        this_cell_tri_dist = calc_tri_dist_squared(this_cell_dist_from_all)
                         closest_cells = np.argsort(this_cell_tri_dist)
                         this_cell = closest_cells[li+1]
                     else:
