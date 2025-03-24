@@ -1,6 +1,8 @@
 import numpy as np
-import update
-import helpers
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from ttgc import (update, helpers)
 
 def calc_cell_positions(n_y, n_x):
     """

@@ -1,7 +1,8 @@
 from matplotlib import pyplot as plt
-import helpers
-import initialize
-import update
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from ttgc import(helpers, initialize)
 
 def plot_weight_mat(W, cell_idx, n_y, n_x, three_dim, cmap='magma'):
     '''

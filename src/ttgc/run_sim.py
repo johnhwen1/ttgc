@@ -1,9 +1,9 @@
+import sys
+import os
 import numpy as np
 from matplotlib import pyplot as plt
-import helpers
-import initialize
-import update
-import landmark
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from ttgc import(helpers, initialize, update, landmark)
 
 def run_sim2d(init_state, cell_position_diffs, 
               n_y, n_x, alpha, beta, I, sigma, T, tau, velocity, start_pos,
