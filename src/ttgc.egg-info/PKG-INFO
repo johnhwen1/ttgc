@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: ttgc
-Version: 1.0.1
+Version: 1.0.3
 Summary: A twisted torus model of grid cell activity.
 Author: John Wen
 License-Expression: GPL-3.0-or-later
