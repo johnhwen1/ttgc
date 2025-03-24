@@ -6,40 +6,17 @@ You can try out the model without having to install anything by running this Goo
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>. Alternatively, you can install the model locally and run the same example notebook (see below for instructions).
 
 ### Installing and running locally
-#### Create a virtual environment (Optional)
-If you have an Anaconda distribution of Python, create an environment with 
-```
-conda create --name ttgc python=3.11. 
-```
-However, Python 3.9 or greater should work. Then, activate the environment with 
-```
-conda activate ttgc
-```
+1. Create a virtual environment (optional)
+   1. If you have an Anaconda distribution of Python, create an environment with ```conda create --name ttgc python=3.11```. However, Python 3.9 or greater should work. Then, activate the environment with ```conda activate ttgc```
+   2. If you use venv, first ensure you have Python 3.9 or greater installed. Then, navigate to a directory where you want to create the environment. If you have Python 3.11, you can run ```python3.11 -m venv ttgc```. Replace the version with the one you have. Then, activate your environment with either ```ttgc\Scripts\activate.bat``` if you're using Command Prompt on Windows or ```source ttgc/bin/activate``` if you're on macOS/Linux. 
 
-If you use venv, first ensure you have Python 3.9 or greater installed. Then, navigate to a directory where you want to create the environment. If you have Python 3.11, you can run
-```
-python3.11 -m venv ttgc
-```
-Replace the version with the one you have. Then, activate your environment with either ```ttgc\Scripts\activate.bat``` if you're using Command Prompt on Windows or ```source ttgc/bin/activate``` if you're on macOS/Linux. 
+2. Set up for GPU acceleration (optional).
+   
+Some of the computations are intensive and benefit from GPU acceleration. If you have access to a GPU and want to use it, make sure you have the GPU version of pytorch installed. If the CPU version is installed, simply remove it with ```pip uninstall torch```. Then, run ```pip install pytorch pytorch-cuda=11.8 -c pytorch -c nvidia pytorch```.
 
-
-
-
-Use either of two methods below to save and run the code locally. 
-#### Method 1: Pip install
-Pip install by running
-```
-pip install ttgc
-```
-Then, you can download and run ttgc.ipynb in the [examples](https://github.com/johnhwen1/ttgc/examples) folder.
-
-#### Method 2: Git clone (or download)
-Git clone or download this repo, cd into the downloaded repo, and then run
-
-```
-pip install .
-pip install -r requirements.txt
-```
+3. Install TTGC by pip installing or git clone / download.
+  1. Method 1: Pip install directly from PyPI. Pip install by running ```pip install ttgc```. Then, you can download and run ttgc.ipynb in the [examples](https://github.com/johnhwen1/ttgc/examples) folder.
+  2. Method 2: Git clone (or download). Git clone or download this repo, cd into the downloaded repo, and then run ```pip install .``` and ```pip install -r requirements.txt```
 Then, navigate to the examples folder and run the ttgc.ipynb 
 
 ## Model details
