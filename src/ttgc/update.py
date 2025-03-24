@@ -1,23 +1,11 @@
 import numpy as np
-import GPUtil
 import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from ttgc import helpers
+from ttgc.globals import can_use_GPU
 
-if len(GPUtil.getAvailable())>0:
-    GPU_available = True
-    import torch
-    device = torch.device('cuda')  # Use GPU
-    dtype = torch.float32
-
-    # Helper function to convert between numpy arrays and tensors
-    to_t = lambda array: torch.tensor(array, device=device, dtype=dtype)
-    from_t = lambda tensor: tensor.to("cpu").detach().numpy()
-else:
-    GPU_available = False
-
-def calc_tri_dist_squared(mat):
+def calc_tri_dist_squared(mat, use_GPU):
     """
     Calculates the square of the tri-norm as defined in Guanella et al. 2007 (see equations 4-13, and the numerator of equation 14).
     
@@ -39,7 +27,7 @@ def calc_tri_dist_squared(mat):
     mat = np.tile(mat, (1, 1, 7))
     sum_mat = S + mat
 
-    if GPU_available:
+    if (can_use_GPU and use_GPU):
         t_sum_mat = to_t(sum_mat)
         t_tri_dist_squared = torch.min(torch.sum(torch.pow(t_sum_mat, 2), 0), 1)[0]
         tri_dist_squared = from_t(t_tri_dist_squared.cpu())

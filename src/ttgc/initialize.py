@@ -46,7 +46,6 @@ def calc_cell_position_diffs(cell_positions):
             
     return cell_position_diffs
 
-
 def initialize_network(n_y, n_x, seed=1):
     """
     Initializes the network of n_y * n_x grid cells 
