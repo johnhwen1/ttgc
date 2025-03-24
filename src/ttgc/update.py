@@ -12,7 +12,38 @@ if can_use_GPU:
     from_t = lambda tensor: tensor.to("cpu").detach().numpy()
     device = torch.device('cuda')  # Use GPU
     dtype = torch.float32
+
+def calc_square_dist_squared(mat, use_GPU):
+    """
+    Calculates the square of the square norm (to generate a non-twisted torus).
     
+    Args:
+        mat (np.ndarray): array of shape (2, N, N) containing the differences in positions between pairs of cells, either with or without velocity modulation.
+        use_GPU (bool): whether to use GPU.
+    Returns:
+        square_dist_squared (np.ndarray): array of shape (2, N, N) containing the square_norms on the modulated position differences array.
+    """
+    n_comps = mat.shape[1]
+    S = np.array([[0, 0], [1, 1], [0, 1], [1, 0]])
+    S = np.fliplr(S)
+    
+    # make copies to do vector subtractions
+    S = np.swapaxes(np.expand_dims(S, 1), 2, 0)
+    S = np.tile(S, (1, n_comps, 1))
+
+    mat = np.expand_dims(mat, 2)
+    mat = np.tile(mat, (1, 1, 4))
+    sum_mat = S + mat
+    
+    if (use_GPU):
+        t_sum_mat = to_t(sum_mat)
+        t_square_dist_squared = torch.min(torch.sum(torch.pow(t_sum_mat, 2), 0), 1)[0]
+        square_dist_squared = from_t(t_tri_dist_squared.cpu())
+    else:
+        square_dist_squared = np.min(np.sum(np.power(sum_mat, 2), axis=0), axis=1)
+
+    return square_dist_squared
+
 def calc_tri_dist_squared(mat, use_GPU):
     """
     Calculates the square of the tri-norm as defined in Guanella et al. 2007 (see equations 4-13, and the numerator of equation 14).
